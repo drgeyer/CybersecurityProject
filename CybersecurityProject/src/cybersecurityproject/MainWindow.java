@@ -4,6 +4,12 @@
  */
 package cybersecurityproject;
 
+import java.awt.BorderLayout;
+import java.io.File;
+import java.io.FileFilter;
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 /**
  *
  * @author 7051665
@@ -26,56 +32,195 @@ public class MainWindow extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        InitialPanel = new javax.swing.JPanel();
+        NewButton = new javax.swing.JButton();
+        AttemptButton = new javax.swing.JButton();
+        ViewButton = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
+        FileMenu = new javax.swing.JMenu();
+        NewPassword = new javax.swing.JMenuItem();
+        AttemptPassword = new javax.swing.JMenuItem();
+        SavePassword = new javax.swing.JMenuItem();
+        ViewPassword = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
-        jMenuItem4 = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
-        jMenu3 = new javax.swing.JMenu();
+        ExitMenuItem = new javax.swing.JMenuItem();
+        EditMenu = new javax.swing.JMenu();
+        HelpMenu = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jMenu1.setText("File");
+        InitialPanel.setMinimumSize(new java.awt.Dimension(477, 200));
+        InitialPanel.setPreferredSize(new java.awt.Dimension(702, 200));
+        InitialPanel.setLayout(new java.awt.GridLayout(1, 0));
 
-        jMenuItem1.setText("New Password");
-        jMenu1.add(jMenuItem1);
+        NewButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/cybersecurityproject/NewPasswordIcon.png"))); // NOI18N
+        NewButton.setMaximumSize(new java.awt.Dimension(147, 200));
+        NewButton.setMinimumSize(new java.awt.Dimension(147, 200));
+        NewButton.setPreferredSize(new java.awt.Dimension(147, 200));
+        NewButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                NewButtonActionPerformed(evt);
+            }
+        });
+        InitialPanel.add(NewButton);
 
-        jMenuItem2.setText("Open Password");
-        jMenu1.add(jMenuItem2);
+        AttemptButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/cybersecurityproject/OpenPasswordIcon.png"))); // NOI18N
+        AttemptButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AttemptButtonActionPerformed(evt);
+            }
+        });
+        InitialPanel.add(AttemptButton);
 
-        jMenuItem3.setText("Save Password");
-        jMenu1.add(jMenuItem3);
-        jMenu1.add(jSeparator1);
+        ViewButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/cybersecurityproject/ViewPassword.png"))); // NOI18N
+        ViewButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ViewButtonActionPerformed(evt);
+            }
+        });
+        InitialPanel.add(ViewButton);
 
-        jMenuItem4.setText("Exit");
-        jMenu1.add(jMenuItem4);
+        getContentPane().add(InitialPanel, java.awt.BorderLayout.CENTER);
 
-        jMenuBar1.add(jMenu1);
+        FileMenu.setText("File");
 
-        jMenu2.setText("Edit");
-        jMenuBar1.add(jMenu2);
+        NewPassword.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
+        NewPassword.setText("New Password");
+        NewPassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                NewPasswordActionPerformed(evt);
+            }
+        });
+        FileMenu.add(NewPassword);
 
-        jMenu3.setText("Help");
-        jMenuBar1.add(jMenu3);
+        AttemptPassword.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
+        AttemptPassword.setText("Attempt Password");
+        AttemptPassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AttemptPasswordActionPerformed(evt);
+            }
+        });
+        FileMenu.add(AttemptPassword);
+
+        SavePassword.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+        SavePassword.setText("Save Password");
+        SavePassword.setEnabled(false);
+        SavePassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SavePasswordActionPerformed(evt);
+            }
+        });
+        FileMenu.add(SavePassword);
+
+        ViewPassword.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.CTRL_MASK));
+        ViewPassword.setText("View Password");
+        ViewPassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ViewPasswordActionPerformed(evt);
+            }
+        });
+        FileMenu.add(ViewPassword);
+        FileMenu.add(jSeparator1);
+
+        ExitMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
+        ExitMenuItem.setText("Exit");
+        ExitMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ExitMenuItemActionPerformed(evt);
+            }
+        });
+        FileMenu.add(ExitMenuItem);
+
+        jMenuBar1.add(FileMenu);
+
+        EditMenu.setText("Edit");
+        jMenuBar1.add(EditMenu);
+
+        HelpMenu.setText("Help");
+        jMenuBar1.add(HelpMenu);
 
         setJMenuBar(jMenuBar1);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 702, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 452, Short.MAX_VALUE)
-        );
-
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void NewPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NewPasswordActionPerformed
+        if(ActivePanel != null)
+            remove(ActivePanel);
+        //Create a NewPassword JPanel
+        ActivePanel = new NewPasswordPanel();
+        //Set it fill up the entire MainWindow
+        add(ActivePanel, BorderLayout.CENTER);
+        SavePassword.setEnabled(true);
+        //Now redraw the UI and displays the ActivePanel
+        pack();
+        
+    }//GEN-LAST:event_NewPasswordActionPerformed
+
+    private void AttemptPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AttemptPasswordActionPerformed
+        //Open a file browser dialog so user can select password file
+        JFileChooser fc = new JFileChooser();
+        fc.setFileFilter(new FileNameExtensionFilter("Password Files", "pwd"));
+        int user_choice = fc.showOpenDialog(this);
+        
+        //if the user selected a file then open it, otherwise keep the ActivePanel
+        if(user_choice == JFileChooser.APPROVE_OPTION)
+        {
+            //If the file is a valid .pwd file then change the ActivePanel
+            if(isValidPwdFile(fc.getSelectedFile()))
+            {
+                remove(ActivePanel);    //we are finally able to release the old ActivePanel
+                ActivePanel = new AttemptPasswordPanel(fc.getSelectedFile());
+            }
+            else
+            {
+                return;
+            }
+            //Now add the new ActivePanel to the JFrame
+            add(ActivePanel);
+            pack();
+        }
+        //if the user chose cancel then do nothing
+        //doing nothign will leave the current ActivePanel up
+    }//GEN-LAST:event_AttemptPasswordActionPerformed
+
+    private boolean isValidPwdFile(File infile)
+    {
+        return true; //place holder for now
+    }
+    
+    private void SavePasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SavePasswordActionPerformed
+
+    }//GEN-LAST:event_SavePasswordActionPerformed
+
+    private void ViewPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ViewPasswordActionPerformed
+        //Create a ViewPassword JFrame
+        //Set it fill up the entire MainWindow
+        //Show the ViewPassword JFrame
+    }//GEN-LAST:event_ViewPasswordActionPerformed
+
+    private void ExitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExitMenuItemActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_ExitMenuItemActionPerformed
+
+    private void NewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NewButtonActionPerformed
+        // TODO add your handling code here:
+        remove(InitialPanel);
+        NewPasswordActionPerformed(null);
+    }//GEN-LAST:event_NewButtonActionPerformed
+
+    private void AttemptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AttemptButtonActionPerformed
+        // TODO add your handling code here:
+        remove(InitialPanel);
+        AttemptPasswordActionPerformed(null);
+    }//GEN-LAST:event_AttemptButtonActionPerformed
+
+    private void ViewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ViewButtonActionPerformed
+        // TODO add your handling code here:
+        remove(InitialPanel);
+        ViewPasswordActionPerformed(null);
+    }//GEN-LAST:event_ViewButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -111,15 +256,24 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
     }
+    //User defined variables
+    private javax.swing.JPanel ActivePanel;
+    
+    //System defined variables
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
+    private javax.swing.JButton AttemptButton;
+    private javax.swing.JMenuItem AttemptPassword;
+    private javax.swing.JMenu EditMenu;
+    private javax.swing.JMenuItem ExitMenuItem;
+    private javax.swing.JMenu FileMenu;
+    private javax.swing.JMenu HelpMenu;
+    private javax.swing.JPanel InitialPanel;
+    private javax.swing.JButton NewButton;
+    private javax.swing.JMenuItem NewPassword;
+    private javax.swing.JMenuItem SavePassword;
+    private javax.swing.JButton ViewButton;
+    private javax.swing.JMenuItem ViewPassword;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     // End of variables declaration//GEN-END:variables
 }
