@@ -194,9 +194,28 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_SavePasswordActionPerformed
 
     private void ViewPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ViewPasswordActionPerformed
-        //Create a ViewPassword JFrame
-        //Set it fill up the entire MainWindow
-        //Show the ViewPassword JFrame
+        //Open a file browser dialog so user can select password file
+        JFileChooser fc = new JFileChooser();
+        fc.setFileFilter(new FileNameExtensionFilter("Password Files", "pwd"));
+        int user_choice = fc.showOpenDialog(this);
+        
+        //if the user selected a file then open it, otherwise keep the ActivePanel
+        if(user_choice == JFileChooser.APPROVE_OPTION)
+        {
+            //If the file is a valid .pwd file then change the ActivePanel
+            if(isValidPwdFile(fc.getSelectedFile()))
+            {
+                remove(ActivePanel);    //we are finally able to release the old ActivePanel
+                ActivePanel = new ViewPasswordPanel(fc.getSelectedFile());
+            }
+            else
+            {
+                return;
+            }
+            //Now add the new ActivePanel to the JFrame
+            add(ActivePanel);
+            pack();
+        }
     }//GEN-LAST:event_ViewPasswordActionPerformed
 
     private void ExitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExitMenuItemActionPerformed
@@ -212,7 +231,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void AttemptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AttemptButtonActionPerformed
         // TODO add your handling code here:
-        remove(InitialPanel);
+        ActivePanel = InitialPanel;
         AttemptPasswordActionPerformed(null);
     }//GEN-LAST:event_AttemptButtonActionPerformed
 
@@ -251,6 +270,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new MainWindow().setVisible(true);
             }
