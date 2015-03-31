@@ -148,7 +148,7 @@ public class MainWindow extends javax.swing.JFrame {
         if(ActivePanel != null)
             remove(ActivePanel);
         //Create a NewPassword JPanel
-        ActivePanel = new NewPasswordPanel();
+        ActivePanel = new NewPasswordForm();
         //Set it fill up the entire MainWindow
         add(ActivePanel, BorderLayout.CENTER);
         SavePassword.setEnabled(true);
@@ -170,7 +170,7 @@ public class MainWindow extends javax.swing.JFrame {
             if(isValidPwdFile(fc.getSelectedFile()))
             {
                 remove(ActivePanel);    //we are finally able to release the old ActivePanel
-                ActivePanel = new AttemptPasswordPanel(fc.getSelectedFile());
+                ActivePanel = new AttemptPasswordForm(fc.getSelectedFile());
             }
             else
             {
@@ -206,7 +206,7 @@ public class MainWindow extends javax.swing.JFrame {
             if(isValidPwdFile(fc.getSelectedFile()))
             {
                 remove(ActivePanel);    //we are finally able to release the old ActivePanel
-                ActivePanel = new ViewPasswordPanel(fc.getSelectedFile());
+                ActivePanel = new ViewPasswordForm(fc.getSelectedFile());
             }
             else
             {
@@ -237,7 +237,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void ViewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ViewButtonActionPerformed
         // TODO add your handling code here:
-        remove(InitialPanel);
+        ActivePanel = InitialPanel;
         ViewPasswordActionPerformed(null);
     }//GEN-LAST:event_ViewButtonActionPerformed
 
