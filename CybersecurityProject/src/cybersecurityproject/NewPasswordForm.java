@@ -5,13 +5,16 @@
  */
 package cybersecurityproject;
 
+import java.awt.List;
+import java.util.ArrayList;
 import javax.swing.*;
 /**
  *
  * @author 7051665
  */
 public class NewPasswordForm extends JPanel {
-
+    ArrayList<ArrayList<PasswordEvent>> PasswordAttempts = new ArrayList<>();
+    int nPassAttempts = 1;
     /**
      * Creates new form NewPasswordForm
      */
@@ -29,6 +32,21 @@ public class NewPasswordForm extends JPanel {
     private void initComponents() {
 
         passwordTextBox1 = new cybersecurityproject.PasswordTextBox();
+        SubmitButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        passwordTextBox2 = new cybersecurityproject.PasswordTextBox();
+        jLabel2 = new javax.swing.JLabel();
+
+        SubmitButton.setText("Submit");
+        SubmitButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SubmitButtonActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Enter Password");
+
+        jLabel2.setText("Verify Password");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -36,20 +54,95 @@ public class NewPasswordForm extends JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(passwordTextBox1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2))
+                        .addContainerGap(267, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(passwordTextBox1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(passwordTextBox2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(SubmitButton)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(26, 26, 26)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(passwordTextBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(269, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(passwordTextBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(SubmitButton)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void SubmitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SubmitButtonActionPerformed
+        // TODO add your handling code here:
+        //First thing to do is close up the TimeToNext event on the final PasswordEvent
+        //in the array
+
+        ArrayList<PasswordEvent> copyPassword;
+        copyPassword = passwordTextBox1.createdPassword;
+        if(copyPassword.size() > 0)
+        {
+            copyPassword.get(copyPassword.size()-1).TimeToNext = 0;
+            PasswordAttempts.add((ArrayList<PasswordEvent>) copyPassword.clone());
+            passwordTextBox1.ResetPasswordData();
+            if(nPassAttempts >= 2)
+            {
+                CompileAndWritePassword();
+                nPassAttempts = 1;
+                PasswordAttempts.clear();
+            }
+            else
+                nPassAttempts += 1;
+            passwordTextBox1.setText("");
+        }
+        
+    }//GEN-LAST:event_SubmitButtonActionPerformed
+
+    private void CompileAndWritePassword()
+    {
+        //this function will look at the variation in positions of each event
+        //to determine the SDEV of each event. 
+        
+        //make sure each of the 5 password attemps have the same number of events
+        //because if they dont something is clearly wrong
+        for(int i = 0; i < 4; i++)
+        {
+            if(PasswordAttempts.get(i).size() != (PasswordAttempts.get(i+1)).size())
+            {
+                //tell the user that their passwords did not match
+                return;
+            }
+            //now that we know they are all the same size arrays, we can safely check them
+            //We need to verify that the Password 1 == Password 2
+            
+        }
+        
+    }
+    
+    public void FireSubmitButton()
+    {
+        SubmitButtonActionPerformed(null);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton SubmitButton;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private cybersecurityproject.PasswordTextBox passwordTextBox1;
+    private cybersecurityproject.PasswordTextBox passwordTextBox2;
     // End of variables declaration//GEN-END:variables
 }
