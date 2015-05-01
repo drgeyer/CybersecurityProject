@@ -7,6 +7,11 @@ package cybersecurityproject;
 import java.awt.BorderLayout;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -155,6 +160,12 @@ public class MainWindow extends javax.swing.JFrame {
         //Now redraw the UI and displays the ActivePanel
         pack();
         
+        //This will select the first text box after opening the NewPasswordForm
+        NewPasswordForm temp = (NewPasswordForm)ActivePanel;
+        temp.InitialFocus();
+        
+        
+        
     }//GEN-LAST:event_NewPasswordActionPerformed
 
     private void AttemptPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AttemptPasswordActionPerformed
@@ -186,13 +197,68 @@ public class MainWindow extends javax.swing.JFrame {
 
     private boolean isValidPwdFile(File infile)
     {
-        return true; //place holder for now
+        int n_ints = 0;
+        Scanner inScanner;
+        try {
+            inScanner = new Scanner(infile);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+        int temp;
+        while(inScanner.hasNextInt())
+        {
+            n_ints += 1;
+            temp = inScanner.nextInt();
+        }
+        
+        return n_ints % 6 == 0; 
     }
     
     private void SavePasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SavePasswordActionPerformed
 
+        JFileChooser fc = new JFileChooser();
+        fc.setFileFilter(new FileNameExtensionFilter("Password Files", "pwd"));
+        int user_choice = fc.showSaveDialog(this);
+        
+        if(user_choice == JFileChooser.APPROVE_OPTION)
+        {
+            File saveFile = fc.getSelectedFile();
+            NewPasswordForm child = (NewPasswordForm)ActivePanel;
+            
+            for(PasswordEvent ev : child.newPassword.events)
+            {
+                WritePasswordEvent(saveFile, ev);
+            }
+            
+        }
     }//GEN-LAST:event_SavePasswordActionPerformed
 
+    private void WritePasswordEvent(File saveFile, PasswordEvent ev)
+    {
+        PrintWriter writer;
+        try {
+             writer = new PrintWriter(saveFile.getName());
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            return;
+        }
+        writer.println(ev.KeyLocation);
+        writer.println(ev.KeyPressed);
+        writer.println(ev.KeyCode);
+        writer.println(ev.KeyLocation);
+        writer.println(ev.TimeSincePrev);
+        writer.println(ev.TimeToNext);
+        writer.println(ev.TimeSinceFirst);
+        
+        
+    }
+    
+    public void FireSavePasswordAction()
+    {
+        SavePasswordActionPerformed(null);
+    }
+    
     private void ViewPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ViewPasswordActionPerformed
         //Open a file browser dialog so user can select password file
         JFileChooser fc = new JFileChooser();

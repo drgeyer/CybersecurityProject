@@ -15,8 +15,8 @@ public class PasswordEvent {
     public int KeyCode;
     public int TimeToNext;
     public int TimeSincePrev;
+    public int TimeSinceFirst;
     public int EventPosition;
-    public int EventSTDEV;
     
     PasswordEvent()
     {
@@ -24,12 +24,8 @@ public class PasswordEvent {
     
     public boolean Equals(PasswordEvent comp)
     {
-        if(this.KeyLocation == comp.KeyLocation && this.KeyPressed == comp.KeyPressed &&
-           this.KeyCode == comp.KeyCode)
-        {
-            return true;
-        }
-        return false;
+        return this.KeyLocation == comp.KeyLocation && this.KeyPressed == comp.KeyPressed &&
+                this.KeyCode == comp.KeyCode;
     }
     
     public int PositionDiff(PasswordEvent comp)

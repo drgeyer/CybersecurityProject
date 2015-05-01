@@ -5,16 +5,25 @@
  */
 package cybersecurityproject;
 
-import java.awt.List;
-import java.util.ArrayList;
+import java.awt.Color;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 /**
  *
  * @author 7051665
  */
 public class NewPasswordForm extends JPanel {
-    ArrayList<ArrayList<PasswordEvent>> PasswordAttempts = new ArrayList<>();
+    Password newPassword = new Password();
+    Password verifyPassword = new Password();
     int nPassAttempts = 1;
+    final int MISS = 40;
+    MainWindow parent = (MainWindow)this.getParent();
     /**
      * Creates new form NewPasswordForm
      */
@@ -36,6 +45,7 @@ public class NewPasswordForm extends JPanel {
         jLabel1 = new javax.swing.JLabel();
         passwordTextBox2 = new cybersecurityproject.PasswordTextBox();
         jLabel2 = new javax.swing.JLabel();
+        MessageLabel = new javax.swing.JLabel();
 
         SubmitButton.setText("Submit");
         SubmitButton.addActionListener(new java.awt.event.ActionListener() {
@@ -59,15 +69,13 @@ public class NewPasswordForm extends JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
                             .addComponent(jLabel2))
-                        .addContainerGap(267, Short.MAX_VALUE))
+                        .addGap(0, 253, Short.MAX_VALUE))
+                    .addComponent(passwordTextBox1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(passwordTextBox2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(passwordTextBox1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(passwordTextBox2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addContainerGap())))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(SubmitButton)
+                        .addComponent(MessageLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(SubmitButton)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -82,7 +90,9 @@ public class NewPasswordForm extends JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(passwordTextBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(SubmitButton)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(SubmitButton)
+                    .addComponent(MessageLabel))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -92,44 +102,95 @@ public class NewPasswordForm extends JPanel {
         //First thing to do is close up the TimeToNext event on the final PasswordEvent
         //in the array
 
-        ArrayList<PasswordEvent> copyPassword;
-        copyPassword = passwordTextBox1.createdPassword;
-        if(copyPassword.size() > 0)
+        newPassword = (Password)this.passwordTextBox1.createdPassword.clone();
+        newPassword.final_password = this.passwordTextBox1.getText();
+        verifyPassword = (Password) this.passwordTextBox2.createdPassword.clone();
+        verifyPassword.final_password = this.passwordTextBox2.getText();
+        MessageLabel.setText("");
+        
+        int outcome = PasswordCompare();
+        if(outcome == 0)
         {
-            copyPassword.get(copyPassword.size()-1).TimeToNext = 0;
-            PasswordAttempts.add((ArrayList<PasswordEvent>) copyPassword.clone());
-            passwordTextBox1.ResetPasswordData();
-            if(nPassAttempts >= 2)
-            {
+            try {
                 CompileAndWritePassword();
-                nPassAttempts = 1;
-                PasswordAttempts.clear();
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(NewPasswordForm.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(NewPasswordForm.class.getName()).log(Level.SEVERE, null, ex);
             }
-            else
-                nPassAttempts += 1;
-            passwordTextBox1.setText("");
+            MessageLabel.setText("Passwords Match!");
+            MessageLabel.setForeground(Color.GREEN);
         }
+        else if (outcome == 1)
+        {
+            //invalid password entered
+            MessageLabel.setText("Passwords are different lengths.");
+            MessageLabel.setForeground(Color.RED);
+        }
+        else if (outcome == 2)
+        {
+            MessageLabel.setText("Passwords have different events.");
+            MessageLabel.setForeground(Color.RED);            
+        }
+        else if (outcome == 3)
+        {
+            MessageLabel.setText("Passwords have different timings.");
+            MessageLabel.setForeground(Color.RED);
+        }
+        else if (outcome == 4)
+        {
+            MessageLabel.setText("Passwords are different strings.");
+            MessageLabel.setForeground(Color.RED);    
+        }
+        //clear everything
+        this.passwordTextBox1.ResetPasswordData();
+        this.passwordTextBox2.ResetPasswordData();
         
     }//GEN-LAST:event_SubmitButtonActionPerformed
 
-    private void CompileAndWritePassword()
+    //this function makes sure newPassword = verifyPassword
+    private int PasswordCompare()
     {
-        //this function will look at the variation in positions of each event
-        //to determine the SDEV of each event. 
+        PasswordComparator comp = new PasswordComparator();
+        return comp.ComparePasswords(newPassword, verifyPassword);
+    }
+    
+    private void CompileAndWritePassword() throws FileNotFoundException, IOException
+    {
+        JFileChooser fc = new JFileChooser();
+        fc.setFileFilter(new FileNameExtensionFilter("Password Files", "pwd"));
+        int user_choice = fc.showSaveDialog(this);
         
-        //make sure each of the 5 password attemps have the same number of events
-        //because if they dont something is clearly wrong
-        for(int i = 0; i < 4; i++)
+        if(user_choice == JFileChooser.APPROVE_OPTION)
         {
-            if(PasswordAttempts.get(i).size() != (PasswordAttempts.get(i+1)).size())
+            File fout = fc.getSelectedFile();
+            FileWriter fwr = new FileWriter(fout);
+            fwr.write(newPassword.final_password + " ");
+            for(PasswordEvent ev : newPassword.events)
             {
-                //tell the user that their passwords did not match
-                return;
+                WritePasswordEvent(fwr, ev);
             }
-            //now that we know they are all the same size arrays, we can safely check them
-            //We need to verify that the Password 1 == Password 2
-            
+            try {
+                fwr.close();
+            } catch (IOException ex) {
+                Logger.getLogger(NewPasswordForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
+    }
+        private void WritePasswordEvent(FileWriter fwr, PasswordEvent ev)
+    {
+        try {
+            fwr.write(Integer.toString(ev.KeyLocation) + " ");
+            fwr.write(Integer.toString(ev.KeyPressed) + " ");
+            fwr.write(Integer.toString(ev.KeyCode)+ " ");
+            fwr.write(Integer.toString(ev.TimeSincePrev) + " ");
+            fwr.write(Integer.toString(ev.TimeToNext) + " ");
+            fwr.write(Integer.toString(ev.TimeSinceFirst) + " ");
+        } catch (IOException ex) {
+            Logger.getLogger(NewPasswordForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        
         
     }
     
@@ -137,8 +198,14 @@ public class NewPasswordForm extends JPanel {
     {
         SubmitButtonActionPerformed(null);
     }
+    
+    public void InitialFocus()
+    {
+        passwordTextBox1.requestFocusInWindow();
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel MessageLabel;
     private javax.swing.JButton SubmitButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
